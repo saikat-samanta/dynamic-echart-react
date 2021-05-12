@@ -30,6 +30,7 @@ export default function App() {
     //   This is responsible for x-axis plot
     xAxis: {
       type: "category",
+      name: "time",
       data: (function () {
         let now = new Date();
         let res = [];
@@ -43,6 +44,7 @@ export default function App() {
     //   This is responsible for y-axis plot
     yAxis: {
       type: "value",
+      name: "value",
     },
     //   This is data and the chart type
     series: [
