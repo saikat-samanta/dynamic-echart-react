@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
 import ReactEcharts from "echarts-for-react";
-import cloneDeep from "lodash.clonedeep";
+import { useState } from "react";
+import "./styles.css";
 
 export default function App() {
-  const DEFAULT_OPTION = {
+  const [getOption, setGetOption] = useState({
     // add for title and subtitle
     title: {
-      text: "Title",
+      text: "Price",
       subtext: "subtitle",
     },
     //   Added for showing data when hover on chart
@@ -30,15 +30,7 @@ export default function App() {
     //   This is responsible for x-axis plot
     xAxis: {
       type: "category",
-      data: (function () {
-        let now = new Date();
-        let res = [];
-        let len = 7;
-        while (len--) {
-          res.unshift(now.toLocaleTimeString().replace(/^\D*/, ""));
-        }
-        return res;
-      })(),
+      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     },
     //   This is responsible for y-axis plot
     yAxis: {
@@ -57,34 +49,22 @@ export default function App() {
       start: 0,
       end: 100,
     },
-  };
-  const [option, setOption] = useState(DEFAULT_OPTION);
-
-  function fetchNewData() {
-    const axisData = new Date().toLocaleTimeString().replace(/^\D*/, "");
-    const newOption = cloneDeep(option); // as constant
-    newOption.title.text = "Hello Echarts-for-react." + new Date().getSeconds();
-    const data0 = newOption.series[0].data;
-    data0.shift();
-    data0.push(Math.round(Math.random() * 1000));
-    newOption.xAxis.data.shift();
-    newOption.xAxis.data.push(axisData);
-    setOption(newOption);
-  }
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      fetchNewData();
-    }, 1000);
-
-    return () => clearInterval(timer);
   });
 
+  setInterval(function () {
+    setGetOption((prevData) => {
+      const newValue = Math.round(Math.random() * 100);
+      const data = getOption.series[0].data;
+      data.shift();
+      data.push(newValue);
+      return { ...prevData, series: [{ data, type: "bar" }] };
+    });
+  }, 100);
   return (
     <div>
       <ReactEcharts
         // we can add a state to do all the stuff in case of dynamic chart
-        option={option}
+        option={getOption}
         opts={{ renderer: "svg" }}
       />
     </div>
